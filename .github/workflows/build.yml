@@ -1,0 +1,31 @@
+name: Build Repetitor EXE
+
+# Запускается автоматически при загрузке/изменении файлов
+# и вручную кнопкой "Run workflow" во вкладке Actions.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Скачать код из репозитория
+        uses: actions/checkout@v4
+
+      - name: Установить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Установить PyInstaller
+        run: pip install pyinstaller
+
+      - name: Собрать exe
+        run: pyinstaller --noconfirm --onefile --windowed --name Repetitor tutor_app.py
+
+      - name: Выложить готовый exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: Repetitor-Windows
+          path: dist/Repetitor.exe
